@@ -12,14 +12,20 @@ const App = () => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    setPersons(persons.concat({ name: newName }));
-    setNewName('');
+    const newPerson = { name: newName };
+    const personExists = persons.find(person => JSON.stringify(person) === JSON.stringify(newPerson));
+    if (!personExists) {
+      setPersons(persons.concat(newPerson));
+      setNewName('');
+      return;
+    }
+
+    alert(`${newName} is already added to phonebook`);
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>debug: {newName}</div>
       <form>
         <div>
           name: <input value={newName} onChange={handleInput} />
@@ -29,7 +35,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person, id) => <p key={id}>{person.name}</p>)}
+      {persons.map(person => <p key={person.name}>{person.name}</p>)}
     </div>
   )
 }
