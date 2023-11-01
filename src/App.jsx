@@ -11,6 +11,7 @@ const App = () => {
   const [phoneNum, setPhoneNum] = useState('')
 
   const [filterState, setFilterState] = useState('')
+
   useEffect(() => {
     personService.getAll().then(response => setPersons(response.data));
   }, []);
@@ -32,6 +33,14 @@ const App = () => {
     alert(`${newName} is already added to phonebook`);
   }
 
+  const handleDelete = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personService.deletePerson(id)
+      .then(response => setPersons(persons.filter(person => person.id !== id)))
+      .catch(err => console.log(`Unable to delete person with id ${id}`));
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -40,7 +49,7 @@ const App = () => {
       <PersonForm newName={newName} phoneNum={phoneNum} handleNameChange={(event) => setNewName(event.target.value)}
         handlePhoneChange={(event) => setPhoneNum(event.target.value)} handleSubmit={handleSubmit} />
       <h3>Numbers</h3>
-      <Persons filterState={filterState} persons={persons} />
+      <Persons filterState={filterState} persons={persons} handleDelete={handleDelete} />
     </div>
   )
 }
