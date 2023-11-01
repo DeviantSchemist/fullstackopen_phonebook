@@ -19,11 +19,14 @@ const App = () => {
   const handleSubmit = event => {
     event.preventDefault();
     const newPerson = { name: newName, number: phoneNum };
-    const personExists = persons.find(person => JSON.stringify(person) === JSON.stringify(newPerson));
+    const personExists = persons.find(person => JSON.stringify({ ...person, id: 0 }) === JSON.stringify({ ...newPerson, id: 0 }));
     if (!personExists) {
-      setPersons(persons.concat(newPerson));
-      setNewName('');
-      setPhoneNum('');
+      axios.post('http://localhost:3001/persons', newPerson)
+        .then(response => {
+          setPersons(persons.concat(response.data));
+          setNewName('');
+          setPhoneNum('');
+        })
       return;
     }
 
