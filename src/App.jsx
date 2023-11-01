@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 import Filter from './Filter'
 import PersonForm from './PersonForm'
@@ -12,8 +12,7 @@ const App = () => {
 
   const [filterState, setFilterState] = useState('')
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data));
+    personService.getAll().then(response => setPersons(response.data));
   }, []);
 
   const handleSubmit = event => {
@@ -21,7 +20,7 @@ const App = () => {
     const newPerson = { name: newName, number: phoneNum };
     const personExists = persons.find(person => JSON.stringify({ ...person, id: 0 }) === JSON.stringify({ ...newPerson, id: 0 }));
     if (!personExists) {
-      axios.post('http://localhost:3001/persons', newPerson)
+      personService.create(newPerson)
         .then(response => {
           setPersons(persons.concat(response.data));
           setNewName('');
