@@ -60,8 +60,16 @@ const App = () => {
   const handleDelete = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       personService.deletePerson(id)
-      .then(response => setPersons(persons.filter(person => person.id !== id)))
-      .catch(err => console.log(`Unable to delete person with id ${id}`));
+      .then(response => {
+        setPersons(persons.filter(person => person.id !== id));
+        setAddMessage(`${name} deleted`);
+        setTimeout(() => {
+          setAddMessage(null)
+        }, 5000);
+      })
+      .catch(err => {
+        setAddMessage(`Information about ${name} has already been removed from the server`);
+      });
     }
   }
 
