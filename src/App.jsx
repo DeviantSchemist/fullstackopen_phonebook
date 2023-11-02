@@ -19,8 +19,9 @@ const App = () => {
   const handleSubmit = event => {
     event.preventDefault();
     const newPerson = { name: newName, number: phoneNum };
+    const nameExists = persons.find(person => person.name === newPerson.name);
     const personExists = persons.find(person => JSON.stringify({ ...person, id: 0 }) === JSON.stringify({ ...newPerson, id: 0 }));
-    if (!personExists) {
+    if (!personExists && !nameExists) {
       personService.create(newPerson)
         .then(response => {
           setPersons(persons.concat(response.data));
@@ -29,8 +30,19 @@ const App = () => {
         })
       return;
     }
-
-    alert(`${newName} is already added to phonebook`);
+    else if (nameExists) {
+      if (window.confirm(`${nameExists.name} is already added to phonebook, replace their old number with a new one?`)) {
+        personService.update(nameExists, newPerson)
+          .then(response => {
+            let personReplace = [ ...persons ];
+            personReplace[personReplace.indexOf(nameExists)] = response.data;
+            setPersons(personReplace);
+            setNewName('');
+            setPhoneNum('');
+          })
+          .catch(error => console.error(error));
+      }
+    }
   }
 
   const handleDelete = (id, name) => {
