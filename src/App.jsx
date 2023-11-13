@@ -36,6 +36,12 @@ const App = () => {
             setAddMessage(null)
           }, 5000);
         })
+        .catch(error => {
+          setAddMessage(`Unable to add ${newPerson.name} because name is too short (min length is 3 characters)`);
+          setTimeout(() => {
+            setAddMessage(null)
+          }, 5000);
+        })
       return;
     }
     else if (nameExists) {
